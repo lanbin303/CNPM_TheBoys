@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/Setting.css';
 import { FaBell, FaLanguage, FaMoon, FaLock, FaQuestionCircle, FaSignOutAlt } from 'react-icons/fa';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const Setting = () => {
   const navigate = useNavigate();
   const { darkMode, toggleTheme } = useTheme();
+  const { language, toggleLanguage } = useLanguage();
   const [settings, setSettings] = useState({
     notifications: true,
-    language: 'vi',
   });
 
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
@@ -31,11 +32,8 @@ const Setting = () => {
     }
   };
 
-  const handleLanguageChange = (e) => {
-    setSettings(prev => ({
-      ...prev,
-      language: e.target.value
-    }));
+  const handleLanguageChange = () => {
+    toggleLanguage();
   };
 
   const handleChangePassword = () => {
@@ -63,38 +61,34 @@ const Setting = () => {
   const handlePasswordSubmit = (e) => {
     e.preventDefault();
     
-    // Kiểm tra mật khẩu mới và xác nhận mật khẩu
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      setError('Mật khẩu mới và xác nhận mật khẩu không khớp');
+      setError(language === 'vi' ? 'Mật khẩu mới và xác nhận mật khẩu không khớp' : 'New password and confirm password do not match');
       return;
     }
 
-    // TODO: Gọi API để cập nhật mật khẩu
     console.log('Đổi mật khẩu:', passwordForm);
     setIsChangePasswordOpen(false);
   };
 
   const handleLogout = () => {
-    // Xóa token hoặc thông tin đăng nhập từ localStorage
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    // Chuyển hướng về trang đăng nhập
     navigate('/login');
   };
 
   return (
     <div className="settings-container">
-      <h1>Cài đặt</h1>
+      <h1>{language === 'vi' ? 'Cài đặt' : 'Settings'}</h1>
 
       <div className="settings-section">
-        <h2>Tùy chọn</h2>
+        <h2>{language === 'vi' ? 'Tùy chọn' : 'Options'}</h2>
         
         <div className="setting-item">
           <div className="setting-info">
             <FaBell className="setting-icon" />
             <div className="setting-text">
-              <h3>Thông báo</h3>
-              <p>Bật/tắt thông báo</p>
+              <h3>{language === 'vi' ? 'Thông báo' : 'Notifications'}</h3>
+              <p>{language === 'vi' ? 'Bật/tắt thông báo' : 'Enable/disable notifications'}</p>
             </div>
           </div>
           <label className="toggle">
@@ -111,8 +105,8 @@ const Setting = () => {
           <div className="setting-info">
             <FaMoon className="setting-icon" />
             <div className="setting-text">
-              <h3>Chế độ tối</h3>
-              <p>Bật/tắt chế độ tối</p>
+              <h3>{language === 'vi' ? 'Chế độ tối' : 'Dark Mode'}</h3>
+              <p>{language === 'vi' ? 'Bật/tắt chế độ tối' : 'Enable/disable dark mode'}</p>
             </div>
           </div>
           <label className="toggle">
@@ -129,12 +123,12 @@ const Setting = () => {
           <div className="setting-info">
             <FaLanguage className="setting-icon" />
             <div className="setting-text">
-              <h3>Ngôn ngữ</h3>
-              <p>Chọn ngôn ngữ hiển thị</p>
+              <h3>{language === 'vi' ? 'Ngôn ngữ' : 'Language'}</h3>
+              <p>{language === 'vi' ? 'Chọn ngôn ngữ hiển thị' : 'Select display language'}</p>
             </div>
           </div>
           <select
-            value={settings.language}
+            value={language}
             onChange={handleLanguageChange}
             className="language-select"
           >
@@ -145,14 +139,14 @@ const Setting = () => {
       </div>
 
       <div className="settings-section">
-        <h2>Bảo mật</h2>
+        <h2>{language === 'vi' ? 'Bảo mật' : 'Security'}</h2>
         
         <div className="setting-item clickable" onClick={handleChangePassword}>
           <div className="setting-info">
             <FaLock className="setting-icon" />
             <div className="setting-text">
-              <h3>Đổi mật khẩu</h3>
-              <p>Cập nhật mật khẩu đăng nhập</p>
+              <h3>{language === 'vi' ? 'Đổi mật khẩu' : 'Change Password'}</h3>
+              <p>{language === 'vi' ? 'Cập nhật mật khẩu đăng nhập' : 'Update login password'}</p>
             </div>
           </div>
           <span className="arrow">›</span>
@@ -160,14 +154,14 @@ const Setting = () => {
       </div>
 
       <div className="settings-section">
-        <h2>Hỗ trợ</h2>
+        <h2>{language === 'vi' ? 'Hỗ trợ' : 'Support'}</h2>
         
         <div className="setting-item clickable">
           <div className="setting-info">
             <FaQuestionCircle className="setting-icon" />
             <div className="setting-text">
-              <h3>Trợ giúp</h3>
-              <p>Xem hướng dẫn sử dụng</p>
+              <h3>{language === 'vi' ? 'Trợ giúp' : 'Help'}</h3>
+              <p>{language === 'vi' ? 'Xem hướng dẫn sử dụng' : 'View user guide'}</p>
             </div>
           </div>
           <span className="arrow">›</span>
@@ -179,56 +173,55 @@ const Setting = () => {
           <div className="setting-info">
             <FaSignOutAlt className="setting-icon" />
             <div className="setting-text">
-              <h3>Đăng xuất</h3>
-              <p>Thoát khỏi tài khoản</p>
+              <h3>{language === 'vi' ? 'Đăng xuất' : 'Log out'}</h3>
+              <p>{language === 'vi' ? 'Thoát khỏi tài khoản' : 'Exit account'}</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Modal đổi mật khẩu */}
       {isChangePasswordOpen && (
         <div className="edit-modal-overlay">
           <div className="edit-modal">
-            <h2>Chỉnh sửa mật khẩu</h2>
+            <h2>{language === 'vi' ? 'Chỉnh sửa mật khẩu' : 'Edit Password'}</h2>
             <form onSubmit={handlePasswordSubmit}>
               <div className="form-group">
-                <label>Mật khẩu hiện tại</label>
+                <label>{language === 'vi' ? 'Mật khẩu hiện tại' : 'Current Password'}</label>
                 <input
                   type="password"
                   name="currentPassword"
                   value={passwordForm.currentPassword}
                   onChange={handlePasswordChange}
-                  placeholder="Nhập mật khẩu hiện tại"
+                  placeholder={language === 'vi' ? 'Nhập mật khẩu hiện tại' : 'Enter current password'}
                 />
               </div>
               <div className="form-group">
-                <label>Mật khẩu mới</label>
+                <label>{language === 'vi' ? 'Mật khẩu mới' : 'New Password'}</label>
                 <input
                   type="password"
                   name="newPassword"
                   value={passwordForm.newPassword}
                   onChange={handlePasswordChange}
-                  placeholder="Nhập mật khẩu mới"
+                  placeholder={language === 'vi' ? 'Nhập mật khẩu mới' : 'Enter new password'}
                 />
               </div>
               <div className="form-group">
-                <label>Xác nhận mật khẩu mới</label>
+                <label>{language === 'vi' ? 'Xác nhận mật khẩu mới' : 'Confirm New Password'}</label>
                 <input
                   type="password"
                   name="confirmPassword"
                   value={passwordForm.confirmPassword}
                   onChange={handlePasswordChange}
-                  placeholder="Nhập lại mật khẩu mới"
+                  placeholder={language === 'vi' ? 'Nhập lại mật khẩu mới' : 'Re-enter new password'}
                 />
               </div>
               {error && <div className="error-message">{error}</div>}
               <div className="modal-buttons">
                 <button type="button" className="cancel-button" onClick={handleClosePasswordModal}>
-                  Hủy
+                  {language === 'vi' ? 'Hủy' : 'Cancel'}
                 </button>
                 <button type="submit" className="save-button">
-                  Lưu thay đổi
+                  {language === 'vi' ? 'Lưu thay đổi' : 'Save changes'}
                 </button>
               </div>
             </form>
